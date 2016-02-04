@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       <bean id="serverConfiguration" class="data.ServerConfiguration">
+              <property name="dbURL" value="jdbc:mysql://localhost/molk"/>
+              <property name="dbUser" value="molk"/>
+              <property name="dbPassword" value="password"/>
+              <property name="rootUserName" value="admin"/>
+              <property name="rootUserPassword" value="guest"/>
+       </bean>
+       <bean id="mailHandler" class="util.MailHandler">
+              <property name="host" value="localhost"/>
+              <property name="inviteTemplate">
+<!-- Tillgängliga variabler (i subject och message): inviteLink -->
+                     <bean class="entities.MailTemplate">
+                            <property name="name" value="Invite Mail Template"/>
+                            <property name="subject" value="Välkommen till Mölk Attend"/>
+                            <property name="message">
+                                   <value>Välkommen till Mölk Utbildning.
+Följ länken för att aktivera ditt konto på Mölk Attend, vårat närvarosystem.
+${inviteLink}</value>
+                            </property>
+                            <property name="sender" value="molkattend@molk.se"/>
+                     </bean>
+              </property>
+              <property name="pwdResetTemplate">
+<!-- Tillgängliga variabler (i subject och message): firstName, lastName, pwdResetLink -->
+                     <bean class="entities.MailTemplate">
+                            <property name="name" value="Password Reset Mail Template"/>
+                            <property name="subject" value="Återställning av lösenord till Mölk Attend"/>
+                            <property name="message">
+                                   <value>Hej, ${firstName}.
+Du har begärt ett nytt lösenord till Mölk Attend. Följ länken nedan för att återställa lösenordet.
+${pwdResetLink}</value>
+                            </property>
+                            <property name="sender" value="molkattend@molk.se"/>
+                     </bean>
+              </property>
+       </bean>
+</beans>

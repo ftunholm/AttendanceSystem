@@ -1,0 +1,61 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+    <context:component-scan base-package="com.springapp.mvc"/>
+
+    <mvc:annotation-driven />
+    <task:annotation-driven/>
+    <bean id="cronJob" class="cron.RemoveExpiredTokenTask"></bean>
+
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**"/>
+            <mvc:mapping path="/admin"/>
+            <bean class="com.springapp.mvc.AdminRequestInterceptor"/>
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/index"/>
+            <mvc:exclude-mapping path="/registrationhandler"/>
+            <mvc:exclude-mapping path="/login"/>
+            <mvc:exclude-mapping path="/dbadmin"/>
+            <mvc:exclude-mapping path="/dbadminlogin"/>
+            <mvc:exclude-mapping path="/request_password"/>
+            <mvc:exclude-mapping path="/reset_password/*"/>
+            <mvc:exclude-mapping path="/register/*"/>
+            <mvc:exclude-mapping path="/terms"/>
+            <mvc:exclude-mapping path="/resources/**"/>
+            <bean class="com.springapp.mvc.RequestInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="false"/>
+        <property name="favorParameter" value="true"/>
+        <property name="mediaTypes">
+            <value>
+                json=application/json
+                html=text/html
+            </value>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>
